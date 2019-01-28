@@ -22,3 +22,23 @@ source deactivate
 ```
 
 [Anaconda]: https://www.anaconda.com/
+
+# Updating the Environment
+
+If you are installing new packages, you will want to update the environment file as well.
+
+```
+# install new package
+conda install new-package-name
+# update environment file
+conda env export > ./environment.yml
+# please remove the "prefix" key from the file
+```
+
+# Project Commands
+
+To see commands specific to the project, e.g. seeding, run:
+
+```
+python manage.py
+```

@@ -2,9 +2,11 @@ name: waisn-tech-tools
 channels:
   - defaults
 dependencies:
-  - ca-certificates=2018.03.07=0
+  - ca-certificates=2018.12.5=0
   - certifi=2018.11.29=py37_0
   - django=2.1.4=py37_0
+  - factory_boy=2.11.1=py37_0
+  - faker=1.0.1=py37_0
   - libcxx=4.0.1=hcfea43d_1
   - libcxxabi=4.0.1=hcfea43d_1
   - libedit=3.1.20170329=hb402a30_2
@@ -13,10 +15,13 @@ dependencies:
   - openssl=1.1.1a=h1de35cc_0
   - pip=18.1=py37_0
   - python=3.7.1=haf84260_7
+  - python-dateutil=2.7.5=py37_0
   - pytz=2018.7=py37_0
   - readline=7.0=h1de35cc_5
   - setuptools=40.6.3=py37_0
-  - sqlite=3.26.0=ha441bb4_0
+  - six=1.12.0=py37_0
+  - sqlite=3.25.3=ha441bb4_0
+  - text-unidecode=1.2=py37_0
   - tk=8.6.8=ha441bb4_0
   - wheel=0.32.3=py37_0
   - xz=5.2.4=h1de35cc_4
