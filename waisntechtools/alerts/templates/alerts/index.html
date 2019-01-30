@@ -5,3 +5,9 @@
 <br/>
 
 <img src="{% static "alerts/WAISN-logo.jpg" %}" />
+
+<ul>
+{% for subscriber in subscribers %}
+    <li>{{ subscriber }}</li>
+{% endfor %}
+</ul>
