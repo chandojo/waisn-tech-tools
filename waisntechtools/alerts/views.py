@@ -3,9 +3,9 @@ from django.views.generic import ListView
 from alerts.models import Subscriber
 
 
-class IndexView(ListView):
+class DebugView(ListView):
     model = Subscriber
-    template_name = 'alerts/index.html'
+    template_name = 'alerts/debug.html'
     context_object_name = 'subscribers'
 
     def get_queryset(self):
