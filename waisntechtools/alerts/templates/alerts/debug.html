@@ -1,0 +1,11 @@
+{% load static %}
+
+<h1>Debug Page</h1>
+
+<br/>
+
+<ul>
+    {% for subscriber in subscribers %}
+    <li>{{ subscriber }}</li>
+    {% endfor %}
+</ul>
