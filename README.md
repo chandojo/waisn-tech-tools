@@ -42,3 +42,23 @@ To see commands specific to the project, e.g. seeding, run:
 ```
 python manage.py
 ```
+
+# Running the Server
+
+There are a few environment settings that need to be enabled to run the server. The reason for this is because the
+website is protected using Auth0. Hence the following environment variables need to be declared. Note that the Auth0
+application should be configured to be a **Regular Web Application**.
+
+* `AUTH0_DOMAIN`: The Auth0 application's domain
+* `AUTH0_KEY`: The Auth0 application's client id
+* `AUTH0_SECRET`: The Auth0 application's client secret.
+
+## Disabling Auth0
+
+Runnning the service locally without access to the internet requires authentication to be disabled. This can be done by
+setting the environment variable:
+
+```
+# disable Auth0 login requirement
+export WAISN_AUTH_DISABLED='TRUE'
+```

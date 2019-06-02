@@ -13,12 +13,27 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path, include
+from urllib.parse import urlencode
+
+from django.conf import settings
+from django.contrib.auth import logout as log_out
+from django.http import HttpResponseRedirect
+from django.urls import include, path
 from django.views.generic import RedirectView
+
+
+def logout(request):
+    log_out(request)
+    return_to = urlencode({'returnTo': request.build_absolute_uri('/')})
+    logout_url = 'https://%s/v2/logout?client_id=%s&%s' % \
+                 (settings.SOCIAL_AUTH_AUTH0_DOMAIN, settings.SOCIAL_AUTH_AUTH0_KEY, return_to)
+    return HttpResponseRedirect(logout_url)
+
 
 urlpatterns = [
     path('', RedirectView.as_view(url='alerts')),
     path('alerts/', include('alerts.urls')),
-    path('admin/', admin.site.urls),
+    path('logout', logout),
+    path('', include('django.contrib.auth.urls')),
+    path('', include('social_django.urls')),
 ]

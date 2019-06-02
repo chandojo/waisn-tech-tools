@@ -1,6 +1,18 @@
+from django.shortcuts import render
 from django.views.generic import ListView
 
 from alerts.models import Subscriber
+from alerts.waisn_auth import waisn_auth
+
+
+@waisn_auth
+def index(request):
+    return render(request, 'alerts/index.html')
+
+
+@waisn_auth
+def debug(request):
+    return DebugView.as_view()(request)
 
 
 class DebugView(ListView):
