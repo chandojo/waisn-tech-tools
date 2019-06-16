@@ -50,4 +50,5 @@ dependencies:
     - requests-oauthlib==1.2.0
     - social-auth-app-django==3.1.0
     - social-auth-core==3.1.0
+    - transitions==0.6.9
     - urllib3==1.25.3

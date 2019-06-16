@@ -2,7 +2,7 @@ import os.path
 
 from django.test import TestCase
 
-from alerts.asset_file import *
+from alerts.asset_files import *
 from alerts.languages import Language
 
 

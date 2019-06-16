@@ -16,7 +16,6 @@ from os import environ
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
@@ -27,7 +26,6 @@ SECRET_KEY = 'n2+o$1^tiwv)s2jx@rsn1-rkv(r@0x1-e&jsp2r-@v8pye8ydt'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -72,7 +70,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'waisntechtools.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
@@ -82,7 +79,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -102,7 +98,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
@@ -116,17 +111,29 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
 
 # BEGIN Auth0
+WAISN_AUTH_DISABLED = environ.get('WAISN_AUTH_DISABLED', False)
+
+
+def environ_var(key):
+    """Used to allow tests to run without having to set the environment variables. If this gets unwieldy, we should
+    think about having a separate test settings file. If testing mode, returns the key name as the value."""
+    import sys
+    if 'test' in sys.argv:
+        return key
+    else:
+        return environ[key]
+
+
 SOCIAL_AUTH_TRAILING_SLASH = False  # Remove trailing slash from routes
-SOCIAL_AUTH_AUTH0_DOMAIN = environ['AUTH0_DOMAIN']
-SOCIAL_AUTH_AUTH0_KEY = environ['AUTH0_KEY']
-SOCIAL_AUTH_AUTH0_SECRET = environ['AUTH0_SECRET']
+SOCIAL_AUTH_AUTH0_DOMAIN = environ_var('AUTH0_DOMAIN')
+SOCIAL_AUTH_AUTH0_KEY = environ_var('AUTH0_KEY')
+SOCIAL_AUTH_AUTH0_SECRET = environ_var('AUTH0_SECRET')
 SOCIAL_AUTH_AUTH0_SCOPE = [
     'openid',
     'profile'

@@ -1,4 +1,4 @@
-import os
+from os import path
 
 from .languages import Language
 
@@ -47,9 +47,9 @@ class AssetFiles(object):
         return self._asset_file(AssetFiles._FOLLOW_UP_FILE)
 
     def _asset_file(self, filename):
-        lang_file = "{}/{}/{}".format(AssetFiles._ASSET_DIR, self._lang, filename)
-        default_lang_file = "{}/{}/{}".format(AssetFiles._ASSET_DIR, Language.DEFAULT_LANGUAGE, filename)
-        if os.path.isfile(lang_file):
+        lang_file = path.join(AssetFiles._ASSET_DIR, self._lang, filename)
+        default_lang_file = path.join(AssetFiles._ASSET_DIR, Language.DEFAULT_LANGUAGE, filename)
+        if path.isfile(lang_file):
             return lang_file
         else:
             return default_lang_file
