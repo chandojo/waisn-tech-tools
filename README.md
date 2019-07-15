@@ -62,3 +62,15 @@ setting the environment variable:
 # disable Auth0 login requirement
 export WAISN_AUTH_DISABLED='TRUE'
 ```
+
+# Docker
+
+You can build the web application using the provided Docker file. Currently, only an image that can be used for testing
+has been created:
+
+```
+# build the Docker image
+docker build -f Dockerfile.test .
+# run the docker file
+docker run -p 8000:8000 --rm [environment variables to enable Auth0] ${IMAGE_ID}
+```
