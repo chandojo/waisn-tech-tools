@@ -5,6 +5,16 @@ from alerts.models import Subscriber
 from alerts.waisn_auth import waisn_auth
 
 
+def get_post_request(get_handler, post_handler):
+    def _handle_request(request):
+        if request.method == 'POST':
+            return post_handler(request)
+        else:
+            return get_handler(request)
+
+    return _handle_request
+
+
 @waisn_auth
 def index(request):
     return render(request, 'alerts/index.html')

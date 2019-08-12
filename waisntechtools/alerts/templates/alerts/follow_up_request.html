@@ -1,0 +1,17 @@
+{% extends 'alerts/base.html' %}
+
+{% block content %}
+    <h1>Follow Up Notification</h1>
+    <br/>
+    <p>Use this tool to send notifications to subscribers after an event has occurred.</p>
+    <br/>
+    <br/>
+    <form action="{% url 'alerts:follow_up' %}" method="post">
+        {% csrf_token %}
+        <table>
+            {{ form.as_table }}
+        </table>
+        <br/>
+        <input type="submit" value="Submit"/>
+    </form>
+{% endblock %}
