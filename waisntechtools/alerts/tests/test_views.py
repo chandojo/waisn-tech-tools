@@ -2,12 +2,13 @@ from bs4 import BeautifulSoup
 from django.contrib.staticfiles import finders
 from django.core.management import call_command
 from django.core.management.commands import flush
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 
 from alerts.tests.fakes import SubscriberFactory
 
 
+@override_settings(WAISN_AUTH_DISABLED=True, DEBUG=True)
 class IndexViewTests(TestCase):
     _STATIC_PREFIX = '/static/'
 
@@ -30,6 +31,7 @@ class IndexViewTests(TestCase):
         return resource.startswith(IndexViewTests._STATIC_PREFIX)
 
 
+@override_settings(WAISN_AUTH_DISABLED=True, DEBUG=True)
 class DebugViewTests(TestCase):
     def setUp(self):
         call_command(flush.Command(), interactive=False)
