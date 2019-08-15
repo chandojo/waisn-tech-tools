@@ -3,7 +3,9 @@ from django.views.generic import ListView
 
 from alerts.models import Subscriber
 from alerts.waisn_auth import waisn_auth
+from alerts.fetch_twilio import fetch_twilio
 
+import requests
 
 @waisn_auth
 def index(request):
@@ -16,9 +18,14 @@ def debug(request):
 
 
 class DebugView(ListView):
-    model = Subscriber
     template_name = 'alerts/debug.html'
     context_object_name = 'subscribers'
+    queryset = Subscriber.objects.order_by('-date_registered')
 
-    def get_queryset(self):
-        return Subscriber.objects.order_by('-date_registered')
+    def get_twilio(self, request, **kwargs):
+        return fetch_twilio(request)
+
+    def get_context_data(self, **kwargs):
+        context = super(DebugView, self).get_context_data(**kwargs)
+        context['messages'] = self.get_twilio
+        return context

@@ -46,4 +46,4 @@ class DebugViewTests(TestCase):
 
         response = self.client.get(reverse('alerts:debug'))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.context['subscribers']), 10)
+        self.assertEqual(len(response.context['subscribers']), 10)        

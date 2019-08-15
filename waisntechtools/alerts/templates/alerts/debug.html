@@ -1,11 +1,18 @@
 {% extends 'alerts/base.html' %}
 
 {% block content %}
-    <h1>Debug Page</h1>
-    <br/>
-    <ul>
-        {% for subscriber in subscribers %}
-        <li>{{ subscriber }}</li>
-        {% endfor %}
-    </ul>
+<h1>Debug Page</h1>
+<br />
+<ul>
+  {% for subscriber in subscribers %}
+  <li>{{ subscriber }}</li>
+  {% endfor %}
+</ul>
+<ul>
+  {% for message in messages %}
+  <li>
+    {{ message }}
+  </li>
+  {% endfor %}
+</ul>
 {% endblock %}
