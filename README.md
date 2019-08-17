@@ -43,7 +43,7 @@ To see commands specific to the project, e.g. seeding, run:
 python manage.py
 ```
 
-# Running the Server
+# Running the Server Locally
 
 There are a few environment settings that need to be enabled to run the server. The reason for this is because the
 website is protected using Auth0. Hence the following environment variables need to be declared. Note that the Auth0
@@ -63,14 +63,113 @@ setting the environment variable:
 export WAISN_AUTH_DISABLED='TRUE'
 ```
 
+# Running the Server in Production
+
+There are two settings configurations:
+* **Development**: `waisntechtools/waisntechtools/settings/development.py`
+* **Production**: `waisntechtools/waisntechtools/settings/production.py`
+
+The production settings file should be used, naturally, in production. Settings files can be specified via the Django
+`runserver` command i.e.:
+
+```
+python ./manage.py runserver --settings waisntechtools.settings.production
+```
+
+There are additional environment settings that need to be set:
+
+* `DJANGO_SECRET_KEY`: See [Django SECRET_KEY Docs][]
+* `DB_HOSTNAME`: database hostname
+* `DB_PORT`: port the database server is listening on
+* `DB_NAME`: name of database to use
+* `DB_USERNAME`: username used to access the database
+* `DB_PASSWORD`: password used to access the database
+
+[Django SECRET_KEY Docs]: https://docs.djangoproject.com/en/2.2/ref/settings/#std:setting-SECRET_KEY
+
 # Docker
 
-You can build the web application using the provided Docker file. Currently, only an image that can be used for testing
-has been created:
+## Development Image
+
+You can build the web application using the provided Docker file. This **Dockerfile** uses a
+[Docker Multi-Stage Build][] to build both the development and production Docker images. This is done because in allows
+inheriting the common Dockerfile segments.
 
 ```
-# build the Docker image
-docker build -f Dockerfile.test .
+# build the development Docker image: must be in the same directory as the Dockerfile file
+docker build . --target waisntechtools-dev
 # run the docker file
-docker run -p 8000:8000 --rm [environment variables to enable Auth0] ${IMAGE_ID}
+docker run -p 8000:8000 --rm [environment variables] ${IMAGE_ID}
 ```
+
+[Docker Multi-Stage Build]: https://docs.docker.com/develop/develop-images/multistage-build/
+
+## Production Image
+
+Build the production image using a similar command for the development, but changing the target:
+
+```
+# build the prod Docker image
+docker build . --target waisntechtools-prod
+```
+
+If you want to test the production docker image, you will need to have a MySQL server running. One possible approach is
+you can spin up a [MariaDB Docker container][].
+
+```
+# spin up the MariaDB container port forwarding 5000 on the local host to 3306 in the Docker container
+docker run -p 5000:3306 --rm --name waisn-mariadb -e MYSQL_ROOT_PASSWORD=pw -d mariadb:latest
+# verify that we can connect to it using the MySQL client (you will be prompted to put in the password)
+mysql -h localhost -P 5000 -u root -p
+# create the database used by the service
+MariaDB [(none)]> create database waisntechtools;
+```
+
+Before using the production image, let's first try to get the service running locally and using the MariaDB container
+as the DB:
+
+```
+# run the needed migrations
+export DJANGO_SECRET_KEY=KEY; \
+  export DB_HOSTNAME=127.0.0.1; \
+  export DB_PORT=5000; \
+  export DB_NAME=waisntechtools; \
+  export DB_USERNAME=root; \
+  export DB_PASSWORD=pw; \
+  python manage.py migrate --settings waisntechtools.settings.production
+# run the server
+export DJANGO_SECRET_KEY=KEY; \
+  export DB_HOSTNAME=127.0.0.1; \
+  export DB_PORT=5000; \
+  export DB_NAME=waisntechtools; \
+  export DB_USERNAME=root; \
+  export DB_PASSWORD=pw; \
+  python manage.py runserver --settings waisntechtools.settings.production
+```
+
+Sweetness. Let's now run the server in a Docker container. Because this will run the server in the default Docker
+bridge, [we cannot use DNS resolution][] using the Docker container name. Hence, we'll need to figure out the IP address
+of the container in the default network:
+
+```
+docker inspect -f '{{.NetworkSettings.Networks.bridge.IPAddress}}' waisn-mariadb
+```
+
+We can then use this IP address to connect the WAISN Docker container to the MariaDB:
+
+```
+# while we've already run migrations, if you have authentication enabled, you'll need to run it again because with
+# authentication, the Auth0 tables need to be created.
+# Notice that we use the port in the Docker network instead of the one exposed on the host.
+docker run -p 8000:8000 --rm -d \
+    -e DJANGO_SECRET_KEY=KEY \
+    -e DB_PORT=3306 \
+    -e DB_NAME=waisntechtools \
+    -e DB_USERNAME=root \
+    -e DB_PASSWORD=pw \
+    -e DB_HOSTNAME=${DB_CONTAINER_IP_ADDR} \
+    ${IMAGE_ID}
+```
+
+[MariaDB Docker container]: https://hub.docker.com/_/mariadb
+[we cannot use DNS resolution]: https://docs.docker.com/v17.09/engine/userguide/networking/#the-default-bridge-network

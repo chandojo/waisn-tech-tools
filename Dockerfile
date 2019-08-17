@@ -1,4 +1,5 @@
-FROM continuumio/miniconda:4.6.14
+FROM continuumio/miniconda:4.6.14 AS waisntechtools-base
+LABEL waisntechtools-image-type=base
 
 ENV SERVER_PORT 8000
 ENV SRC_DIR /opt/waisn-tech-tools/
@@ -27,14 +28,37 @@ EXPOSE $SERVER_PORT
 ENV AUTH0_DOMAIN AUTH0_DOMAIN
 ENV AUTH0_KEY AUTH0_KEY
 ENV AUTH0_SECRET AUTH0_SECRET
-ENV WAISN_AUTH_DISABLED TRUE
 
 # run migrations
 RUN . /opt/conda/etc/profile.d/conda.sh && \
     conda activate waisn-tech-tools && \
     python manage.py migrate
 
-# run server
+# build development image
+FROM waisntechtools-base as waisntechtools-dev
+LABEL waisntechtools-image-type=dev
+ENV WAISN_AUTH_DISABLED TRUE
 ENTRYPOINT . /opt/conda/etc/profile.d/conda.sh && \
     conda activate waisn-tech-tools && \
     python manage.py runserver 0.0.0.0:$SERVER_PORT
+
+# build production image
+FROM waisntechtools-base as waisntechtools-prod
+LABEL waisntechtools-image-type=prod
+ENV WAISN_AUTH_DISABLED FALSE
+
+ENV DJANGO_SECRET_KEY DJANGO_SECRET_KEY
+ENV DB_HOSTNAME DB_HOSTNAME
+ENV DB_PORT DB_PORT
+ENV DB_NAME DB_NAME
+ENV DB_USERNAME DB_USERNAME
+ENV DB_PASSWORD DB_PASSWORD
+
+# set up the static files to be served by web server
+RUN . /opt/conda/etc/profile.d/conda.sh && \
+    conda activate waisn-tech-tools && \
+    python manage.py collectstatic --settings waisntechtools.settings.production
+
+ENTRYPOINT . /opt/conda/etc/profile.d/conda.sh && \
+    conda activate waisn-tech-tools && \
+    python manage.py runserver --settings waisntechtools.settings.production 0.0.0.0:$SERVER_PORT
