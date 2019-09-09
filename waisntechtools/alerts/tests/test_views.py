@@ -46,4 +46,43 @@ class DebugViewTests(TestCase):
 
         response = self.client.get(reverse('alerts:debug'))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.context['subscribers']), 10)        
+        self.assertEqual(len(response.context['subscribers']), 10)
+
+
+@override_settings(WAISN_AUTH_DISABLED=True, DEBUG=True)
+class AlertViewTests(TestCase):
+    def test_alert_notification_page(self):
+        response = self.client.get(reverse('alerts:alert'))
+        self.assertContains(response, 'Alert Notification')
+        self.assertIsNotNone(response.context['form'])
+
+    def test_alert_submission(self):
+        response = self.client.post(reverse('alerts:alert'), data={
+            'address': '0123 Awesome Str'
+        })
+        self.assertRedirects(response, reverse('alerts:alert_sent'))
+
+    def test_alert_sent_page(self):
+        response = self.client.get(reverse('alerts:alert_sent'))
+        self.assertContains(response, 'Alert Notification Successfully Sent')
+
+
+@override_settings(WAISN_AUTH_DISABLED=True, DEBUG=True)
+class FollowUpViewTests(TestCase):
+    def test_follow_up_page(self):
+        response = self.client.get(reverse('alerts:follow_up'))
+        self.assertContains(response, 'Follow Up Notification')
+        self.assertIsNotNone(response.context['form'])
+
+    def test_alert_submission(self):
+        response = self.client.post(reverse('alerts:follow_up'), data={
+            'num_people': '123',
+            'city': 'Seattle',
+            'target_name': 'Will The Wise',
+            'target_phone_num': '123-456-7890'
+        })
+        self.assertRedirects(response, reverse('alerts:follow_up_sent'))
+
+    def test_alert_sent_page(self):
+        response = self.client.get(reverse('alerts:follow_up_sent'))
+        self.assertContains(response, 'Follow Up Notification Successfully Sent')

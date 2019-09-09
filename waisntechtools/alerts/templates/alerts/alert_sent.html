@@ -1,0 +1,12 @@
+{% extends 'alerts/base.html' %}
+
+{% block content %}
+    <h1>Alert Notification Successfully Sent</h1>
+    <br/>
+    <p>You have successfully sent alerts to the following subscribers:</p>
+    <ul>
+        {% for subscriber in subscribers %}
+            <li>{{ subscriber }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
