@@ -8,11 +8,31 @@
   <li>{{ subscriber }}</li>
   {% endfor %}
 </ul>
-<ul>
+
+<table>
+  <tr>
+    <th>
+      To
+    </th>
+    <th>
+      From
+    </th>
+    <th>
+      Message
+    </th>
+  </tr>
   {% for message in messages %}
-  <li>
-    {{ message }}
-  </li>
+  <tr>
+    <td>
+      {{ message.to }}
+    </td>
+    <td>
+      {{ message.from_ }}
+    </td>
+    <td>
+      {{ message.body }}
+    </td>
+  </tr>
   {% endfor %}
-</ul>
+</table>
 {% endblock %}

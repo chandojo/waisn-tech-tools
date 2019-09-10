@@ -15,7 +15,7 @@ class SubscriberFactory(DjangoModelFactory):
     language = Faker('language')
     subscription_state = Faker('subscription_state')
     date_registered = Faker('date_time', tzinfo=timezone.get_current_timezone())
-    
+
 
 class _SubscriptionStateProvider(BaseProvider):
     _STATES = [
@@ -51,6 +51,10 @@ class _LanguageProvider(BaseProvider):
         return _LanguageProvider._LANGUAGES[
             self._rand.randrange(0, len(_LanguageProvider._LANGUAGES))
         ]
+
+class Message(DjangoModelFactory):
+    message_from = Faker('phone_number')
+
 
 
 Faker.add_provider(_SubscriptionStateProvider)

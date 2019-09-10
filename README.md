@@ -52,6 +52,9 @@ application should be configured to be a **Regular Web Application**.
 * `AUTH0_DOMAIN`: The Auth0 application's domain
 * `AUTH0_KEY`: The Auth0 application's client id
 * `AUTH0_SECRET`: The Auth0 application's client secret.
+* `TWILIO_ACCOUNT_SID`: Twilio Account SID for client
+* `TWILIO_AUTH_TOKEN`: Twilio Auth Token for client
+* `TWILIO_SMS_NUMBER`: Phone number bought through Twilio for client
 
 ## Disabling Auth0
 

@@ -56,5 +56,5 @@ dependencies:
     - transitions==0.6.9
     - twilio==6.24.1
     - urllib3==1.25.3
-prefix: /Users/chandojo/anaconda2/envs/waisn-tech-tools
+prefix: //anaconda3/envs/waisn-tech-tools
 
